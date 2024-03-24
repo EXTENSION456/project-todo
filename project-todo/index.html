@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Todo List</h1>
+    <form>
+      <div>
+        <input type="text" id="inputField" />
+        <button class="btn">Add Todo</button>
+      </div>
+      <section class="todo-list-elem"></section>
+    </form>
+
+    <script>
+      var input = document.querySelector("#inputField");
+      var addButton = document.querySelector(".btn");
+      var todo_list_elem = document.querySelector(".todo-list-elem");
+
+      const getTodoFromStorage = () => {
+        return JSON.parse(localStorage.getItem("todoItem"));
+      };
+
+      const removeTodoLocal = () => {
+        return localStorage.setItem("todoItem", JSON.stringify(data));
+      };
+
+      var data = getTodoFromStorage() || [];
+
+      const addTodoDataDynamically = (curElem) => {
+        const elem = document.createElement("div");
+        //elem.
+        elem.innerHTML = `<li>${curElem}</li><button class="deleteBtn">Delete</button>`;
+        elem.classList.add("list-todo");
+        todo_list_elem.append(elem);
+      };
+
+      const handleAddButton = (event) => {
+        event.preventDefault();
+        //made the array and inserted into the local storage
+        if (input.value && !data.includes(input.value)) {
+          data.push(input.value);
+          //display the data into the todo list
+          const elem = document.createElement("div");
+          elem.innerHTML = `<li>${input.value}</li><button class="deleteBtn">Delete</button>`;
+          elem.classList.add("list-todo");
+          todo_list_elem.append(elem);
+        }
+        input.value = "";
+        if (data) {
+          localStorage.setItem("todoItem", JSON.stringify(data));
+        }
+      };
+
+      const showTodoList = () => {
+        data.forEach((curElem) => {
+          addTodoDataDynamically(curElem);
+        });
+      };
+
+      showTodoList();
+
+      const removeTodoElem = (event) => {
+        var item = event.target.previousElementSibling.innerText;
+        var deleteDiv = event.target.parentElement;
+        deleteDiv.remove();
+        data = data.filter((elem, index, arr) => {
+          return elem != item;
+        });
+        removeTodoLocal(data);
+      };
+
+      addButton.addEventListener("click", handleAddButton);
+
+      todo_list_elem.addEventListener("click", (event) => {
+        event.preventDefault();
+        if(event.target.classList.contains("deleteBtn")){
+          removeTodoElem(event);
+        }
+      });
+    </script>
+  </body>
+</html>
